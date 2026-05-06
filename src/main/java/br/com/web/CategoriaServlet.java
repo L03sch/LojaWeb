@@ -9,6 +9,11 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet responsável por gerenciar operações com Categorias.
+ * Implementa operações CRUD (Create, Read, Update, Delete) através de requisições HTTP.
+ * Mapeado para a rota /categorias.
+ */
 @WebServlet("/categorias")
 public class CategoriaServlet extends HttpServlet {
 
@@ -16,6 +21,14 @@ public class CategoriaServlet extends HttpServlet {
 
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
 
+    /**
+     * Processa requisições GET para operações de leitura.
+     * Parâmetro "acao" define o tipo de operação:
+     * - listar: exibe todas as categorias
+     * - novo: abre formulário para nova categoria
+     * - editar: abre formulário para edição
+     * - excluir: exclui uma categoria
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -43,6 +56,9 @@ public class CategoriaServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Processa requisições POST para operações de escrita (inserção/atualização).
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

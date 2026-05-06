@@ -11,6 +11,11 @@ import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Servlet responsável por gerenciar operações com Produtos.
+ * Implementa operações CRUD (Create, Read, Update, Delete) e carrega categorias para formulários.
+ * Mapeado para a rota /produtos.
+ */
 @WebServlet("/produtos")
 public class ProdutoServlet extends HttpServlet{
 
@@ -19,6 +24,14 @@ public class ProdutoServlet extends HttpServlet{
     private final ProdutoDAO produtoDAO = new ProdutoDAO();
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
 
+    /**
+     * Processa requisições GET para operações de leitura e navegação.
+     * Parâmetro "acao" define o tipo de operação:
+     * - listar: exibe todos os produtos
+     * - novo: abre formulário para novo produto
+     * - editar: abre formulário para edição
+     * - excluir: exclui um produto
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -46,6 +59,9 @@ public class ProdutoServlet extends HttpServlet{
         }
     }
 
+    /**
+     * Processa requisições POST para operações de escrita (inserção/atualização).
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
