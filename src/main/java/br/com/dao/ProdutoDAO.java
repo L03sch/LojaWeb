@@ -11,8 +11,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Access Object para a entidade Produto.
+ * Gerencia todas as operações de banco de dados relacionadas aos produtos:
+ * inserção, leitura, atualização e exclusão.
+ */
 public class ProdutoDAO{
 
+    /**
+     * Lista todos os produtos cadastrados.
+     * Ordena por ID de produto em ordem ascendente.
+     *
+     * @return Lista de todos os produtos
+     * @throws RuntimeException em caso de erro SQL
+     */
     public List<Produto> listar() {
         List<Produto> produtos = new ArrayList<>();
         String sql = "SELECT id_produto, nome_produto, preco, estoque, id_categoria FROM PRODUTOS ORDER BY id_produto";
@@ -37,6 +49,13 @@ public class ProdutoDAO{
         return produtos;
     }
 
+    /**
+     * Busca um produto específico pelo ID.
+     *
+     * @param id o ID do produto
+     * @return o Produto encontrado, ou null se não existir
+     * @throws RuntimeException em caso de erro SQL
+     */
     public Produto buscarPorId(int id) {
         String sql = "SELECT id_produto, nome_produto, preco, estoque, id_categoria FROM PRODUTOS WHERE id_produto = ?";
 
@@ -63,6 +82,12 @@ public class ProdutoDAO{
         return null;
     }
 
+    /**
+     * Insere um novo produto no banco de dados.
+     *
+     * @param produto o Produto a ser inserido
+     * @throws RuntimeException em caso de erro SQL
+     */
     public void inserir(Produto produto) {
         String sql = "INSERT INTO PRODUTOS (nome_produto, preco, estoque, id_categoria) VALUES (?, ?, ?, ?)";
 
@@ -79,6 +104,12 @@ public class ProdutoDAO{
         }
     }
 
+    /**
+     * Atualiza as informações de um produto existente.
+     *
+     * @param produto o Produto com as informações atualizadas
+     * @throws RuntimeException em caso de erro SQL
+     */
     public void atualizar(Produto produto) {
         String sql = "UPDATE PRODUTOS SET nome_produto = ?, preco = ?, estoque = ?, id_categoria = ? WHERE id_produto = ?";
 
@@ -96,6 +127,12 @@ public class ProdutoDAO{
         }
     }
 
+    /**
+     * Remove um produto do banco de dados pelo ID.
+     *
+     * @param id o ID do produto a ser removido
+     * @throws RuntimeException em caso de erro SQL
+     */
     public void excluir(int id) {
         String sql = "DELETE FROM PRODUTOS WHERE id_produto = ?";
 
