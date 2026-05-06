@@ -1,243 +1,122 @@
-# LojaWeb
+# LojaWeb — aplicação exemplo em Java
 
-Projeto Java Web desenvolvido com **JSP + Servlets + JDBC + MySQL** para cadastro e consulta de **categorias** e **produtos**.
+Este repositório contém uma aplicação web simples escrita em Java que demonstra um CRUD básico para gerenciar categorias e produtos. O projeto utiliza JSP para as telas, Servlets para controlar as rotas, e JDBC/MySQL para persistência.
 
-O sistema foi organizado como uma aplicação web tradicional, onde os servlets recebem as requisições, consultam os DAOs, e encaminham os dados para as telas JSP.
+Visão geral
+-----------
+LojaWeb foi construída como um exemplo educativo: os Servlets recebem requisições HTTP, consultam os DAOs para operar sobre o banco e repassam os dados para as páginas JSP que exibem os formulários e listas.
 
-## Objetivo do projeto
+Funcionalidades principais
+--------------------------
+- Gerenciar categorias (listar, criar, editar, excluir)
+- Gerenciar produtos (listar, criar, editar, excluir)
+- Teste de conexão com o banco de dados
 
-O projeto serve para demonstrar um CRUD simples de dois módulos principais:
+Plataforma e dependências
+-------------------------
+- Java 17
+- Maven (build/empacotamento)
+- Servlets 4.0
+- JSP + JSTL
+- JDBC
+- MySQL (conector disponível no pom)
 
-- **Categorias**
-- **Produtos**
+Estrutura do projeto
+--------------------
+Código-fonte principal:
 
-Com ele é possível:
-
-- listar registros
-- cadastrar novos itens
-- editar itens existentes
-- excluir registros
-- testar a conexão com o banco de dados
-
-## Tecnologias utilizadas
-
-- **Java 17**
-- **Maven**
-- **Servlets 4.0**
-- **JSP**
-- **JSTL**
-- **JDBC**
-- **MySQL**
-
-## Estrutura geral do projeto
-
-```text
 src/main/java/br/com/
-├── dao/      -> acesso ao banco de dados
-├── model/    -> classes de domínio
-├── util/     -> utilitários de conexão
-└── web/      -> servlets da aplicação
+  ├── dao/      — classes responsáveis pelo acesso ao banco
+  ├── model/    — entidades do domínio
+  ├── util/     — utilitários (ex.: ConnectionFactory)
+  └── web/      — Servlets que tratam requisições
+
+Conteúdo web:
 
 src/main/webapp/
-├── index.jsp -> menu principal
-├── css/      -> estilos das telas
-├── js/       -> scripts de apoio
-└── WEB-INF/views/
-    ├── home.jsp
-    ├── categoria-consulta.jsp
-    ├── categoria-form.jsp
-    ├── produto-consulta.jsp
-    └── produto-form.jsp
-```
+  ├── index.jsp    — página inicial / menu
+  ├── css/         — estilos
+  ├── js/          — scripts cliente
+  └── WEB-INF/views/
+      ├── home.jsp
+      ├── categoria-consulta.jsp
+      ├── categoria-form.jsp
+      ├── produto-consulta.jsp
+      └── produto-form.jsp
 
-## Entidades do sistema
+Modelos (entidades)
+--------------------
+- Categoria: representa uma categoria com campos como idCategoria, nomeCategoria e descricao.
+- Produto: representa um produto (idProduto, idCategoria, nomeProduto, estoqueProduto, precoProduto). Note que, na implementação atual, `Produto` mantém referência/campo `idCategoria` — a modelagem pode ser ajustada mais tarde.
 
-### `Categoria`
-Classe que representa uma categoria cadastrada no sistema.
+Persistência (DAOs)
+-------------------
+As classes `CategoriaDAO` e `ProdutoDAO` encapsulam operações CRUD principais: inserir, atualizar, listar, buscar por ID e excluir.
 
-Campos principais:
+Servlets e rotas
+----------------
+- `CategoriaServlet` — rota `/categorias`: exibe listagem, formulário de inclusão/edição, salva e remove categorias.
+- `ProdutoServlet` — rota `/produtos`: exibe listagem de produtos, formulário (carrega categorias), salva e remove produtos.
+- `TesteConexaoServlet` — rota `/teste-conexao`: endpoint simples para verificar se a aplicação alcança o banco MySQL.
 
-- `idCategoria`
-- `nomeCategoria`
-- `descricao`
+Páginas JSP
+----------
+- `index.jsp`: menu principal com links para categorias, produtos e teste de conexão.
+- `WEB-INF/views/home.jsp`: versão do painel dentro de `WEB-INF`.
+- `categoria-consulta.jsp`: tabela com ID, nome, descrição e ações (editar/excluir).
+- `categoria-form.jsp`: formulário para criar/editar categorias (nome, descrição).
+- `produto-consulta.jsp`: tabela com ID produto, ID categoria, nome, preço, estoque e ações.
+- `produto-form.jsp`: formulário para criar/editar produtos (seletor de categoria, nome, estoque, preço).
 
-### `Produto`
-Classe que representa um produto.
+Como navegar (fluxo rápido)
+---------------------------
+Categorias
+1. Abra o menu principal.
+2. Clique em Gerenciar Categorias.
+3. Use Incluir para criar, Alterar para editar e a ação de excluir na listagem para remover.
 
-Campos principais:
+Produtos
+1. Vá ao menu principal.
+2. Entre em Gerenciar Produtos.
+3. Use Incluir para criar um produto (o formulário carrega as categorias disponíveis), Alterar para editar e a ação de excluir para remover.
 
-- `idProduto`
-- `idCategoria`
-- `nomeProduto`
-- `estoqueProduto`
-- `precoProduto`
+Conexão com o banco
+-------------------
+As conexões são gerenciadas por `ConnectionFactory`. A configuração usada no projeto (padrão) é:
 
-> Observação: a classe `Produto` herda de `Categoria`, mas também mantém seu próprio campo `idCategoria`. Isso indica uma modelagem que pode ser revisada no futuro.
+- URL: jdbc:mysql://localhost:3306/loja_db?useSSL=false&serverTimezone=America/Sao_Paulo
+- Usuário: loja
+- Senha: loja
 
-## Camada de acesso a dados
+Altere esses valores em `ConnectionFactory` se o seu ambiente usar credenciais ou endereço de banco diferentes.
 
-O projeto utiliza classes DAO para comunicação com o banco:
-
-- `CategoriaDAO`
-- `ProdutoDAO`
-
-Essas classes são responsáveis por operações como:
-
-- inserir
-- atualizar
-- listar
-- buscar por ID
-- excluir
-
-## Servlets
-
-### `CategoriaServlet`
-Rota: **`/categorias`**
-
-Responsável por:
-
-- abrir a tela de listagem de categorias
-- abrir a tela de cadastro
-- abrir a tela de edição
-- salvar categorias
-- excluir categorias
-
-### `ProdutoServlet`
-Rota: **`/produtos`**
-
-Responsável por:
-
-- abrir a tela de listagem de produtos
-- abrir a tela de cadastro
-- abrir a tela de edição
-- carregar a lista de categorias para o formulário de produto
-- salvar produtos
-- excluir produtos
-
-### `TesteConexaoServlet`
-Rota: **`/teste-conexao`**
-
-Serve para verificar se a aplicação consegue conectar ao banco MySQL.
-
-## Páginas JSP
-
-### `index.jsp`
-É a tela inicial do sistema. Funciona como menu principal, permitindo acessar:
-
-- gerenciamento de categorias
-- gerenciamento de produtos
-- teste de conexão
-
-### `WEB-INF/views/home.jsp`
-Versão de menu principal dentro de `WEB-INF/views`, com visual mais elaborado.
-
-### `categoria-consulta.jsp`
-Tela de listagem das categorias.
-
-Mostra:
-
-- ID
-- nome
-- descrição
-- ações de editar e excluir
-
-### `categoria-form.jsp`
-Tela usada para:
-
-- incluir categoria
-- alterar categoria
-
-Campos:
-
-- nome da categoria
-- descrição
-
-### `produto-consulta.jsp`
-Tela de listagem dos produtos.
-
-Mostra:
-
-- ID do produto
-- ID da categoria
-- nome
-- preço
-- estoque
-- ações de editar e excluir
-
-### `produto-form.jsp`
-Tela usada para:
-
-- incluir produto
-- alterar produto
-
-Campos:
-
-- categoria (`idCategoria` em um seletor com as categorias existentes)
-- nome
-- estoque
-- preço
-
-## Fluxo da aplicação
-
-### Categorias
-1. Acesse o menu principal.
-2. Clique em **Gerenciar Categorias**.
-3. O servlet carrega a listagem.
-4. Para cadastrar, clique em **Incluir**.
-5. Para editar, clique em **Alterar**.
-6. Para excluir, use a ação de exclusão na listagem.
-
-### Produtos
-1. Acesse o menu principal.
-2. Clique em **Gerenciar Produtos**.
-3. O servlet carrega a listagem de produtos.
-4. Para cadastrar um produto, clique em **Incluir**.
-5. O formulário carrega as categorias cadastradas para seleção.
-6. Para editar, clique em **Alterar**.
-7. Para excluir, use a ação de exclusão na listagem.
-
-## Conexão com o banco
-
-A conexão é centralizada em `ConnectionFactory`.
-
-Configuração atual esperada:
-
-- **URL:** `jdbc:mysql://localhost:3306/loja_db?useSSL=false&serverTimezone=America/Sao_Paulo`
-- **Usuário:** `loja`
-- **Senha:** `loja`
-
-É necessário ter o banco MySQL criado com esses dados, ou ajustar a classe `ConnectionFactory` conforme o seu ambiente.
-
-## Execução do projeto
-
-### Requisitos
-
+Como executar
+--------------
+Requisitos mínimos:
 - Java 17
 - Maven
-- Servidor compatível com Servlet 4.0, como Apache Tomcat 9
-- MySQL rodando localmente
+- Servidor compatível com Servlet 4.0 (ex.: Apache Tomcat 9+)
+- Banco MySQL em funcionamento
 
-### Passos básicos
+Passos resumidos:
 
-1. Configure o banco de dados `loja_db`.
-2. Ajuste usuário e senha se necessário em `ConnectionFactory`.
-3. Importe o projeto como projeto Maven.
-4. Execute o build:
+1. Certifique-se de criar o banco `loja_db` e configurar o usuário/senha ou ajustar `ConnectionFactory`.
+2. No diretório do projeto, gere o artefato:
 
-```bash
+```powershell
 mvn clean package
 ```
 
-5. Implante o `.war` gerado no seu servidor de aplicação.
-6. Acesse o menu principal pelo navegador.
+3. Implante o arquivo WAR gerado (target/lojaWeb.war) no seu servidor de aplicação.
+4. Acesse a aplicação via navegador pelo contexto do seu servidor.
 
-## Observações importantes
+Notas e observações
+-------------------
+- As páginas dentro de `WEB-INF/views` são usadas para evitar acesso direto por URL.
+- Há arquivos estáticos na raiz de `webapp` que podem ser versões alternativas do layout.
+- O formulário de produto depende da lista de categorias provida pelo `ProdutoServlet`.
 
-- O projeto usa páginas JSP dentro de `WEB-INF/views` para evitar acesso direto às telas principais.
-- Algumas páginas na raiz do `webapp` podem existir como versões antigas ou alternativas do layout.
-- O carregamento das categorias no formulário de produto depende da lista enviada pelo `ProdutoServlet`.
-
-## Resumo
-
-Este projeto é uma aplicação web didática de gerenciamento de categorias e produtos, com navegação simples, persistência em MySQL e telas JSP separadas por funcionalidade.
+Resumo
+------
+LojaWeb é um exemplo didático que ilustra uma aplicação Java web clássica com JSP, Servlets e JDBC para operações de CRUD sobre categorias e produtos. Use-o como base para aprendizado ou para adaptar funcionalidades a projetos maiores.
 
